@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Addon Author="trox" APIVersion="8" Name="OrionLib" Description="">
+    <Script Name="OrionLib.lua"/>
+    <Script Name="OrionLib_Unit.lua"/>
+    <Script Name="OrionLib_Spell.lua"/>
+    <Script Name="OrionLib_Util.lua"/>
+</Addon>
