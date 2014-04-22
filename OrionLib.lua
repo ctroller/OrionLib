@@ -1,3 +1,9 @@
+--------------------------------------------------------
+-- Orion:Lib-1.0
+--  + Orion:Unit-1.0
+--  + Orion:Spell-1.0
+--  + Orion:Util-1.0
+--------------------------------------------------------
 local OrionLib = {}
 
 --------------------------------------------------------
@@ -8,18 +14,18 @@ local OrionLib = {}
 -- and much more.
 --------------------------------------------------------
 OrionLib.Unit.tUnits = {
-	"player"		= GameLib.GetPlayerUnit,
-	"target"		= GameLib.GetTargetUnit,
-	"focus"  		= function() return GameLib.GetPlayerUnit():GetAlternateTarget() end,
-	"targettarget"	= function() return GameLib.GetTargetUnit() and GameLib.GetTargetUnit():GetTarget() or nil end
+	"player"        = GameLib.GetPlayerUnit,
+	"target"        = GameLib.GetTargetUnit,
+	"focus"         = function() return GameLib.GetPlayerUnit():GetAlternateTarget() end,
+	"targettarget"  = function() return GameLib.GetTargetUnit() and GameLib.GetTargetUnit():GetTarget() or nil end
 	"focustarget"   = function() return GameLib.GetPlayerUnit():GetAlternateTarget() and GameLib.GetPlayerUnit():GetAlternateTarget():GetTarget() or nil end
 }
 
 -- wraps basic Unit objects with our Wrapper functions
-function OrionLib.Unit:Get(sIdentifier)
-	sIdentifier = sIdentifier:lower()
-	if self.tUnits[sIdentifier] ~= nil then
-		return OrionLib.Util.JoinTables(self.tUnits[sIdentifier], OrionLib.Unit.Wrapper)
+function OrionLib.Unit:Get(strIdentifier)
+	strIdentifier= strIdentifier:lower()
+	if self.tUnits[strIdentifier] ~= nil then
+		return OrionLib.Util.JoinTables(self.tUnits[strIdentifier], OrionLib.Unit.Wrapper)
 	end
 		
 	return nil
@@ -30,9 +36,9 @@ local OrionLib.Unit.Wrapper = {}
 
 -- Aura handling
 function OrionLib.Unit.Wrapper:HasAura(iAuraId, bHarmful)
-	local sTable = bHarmful and "arHarmful" or "arBeneficial"
+	local strTable = bHarmful and "arHarmful" or "arBeneficial"
 	local Auras = self:GetBuffs()
-	for i, Aura in ipairs(Auras[sTable]) do
+	for i, Aura in ipairs(Auras[strTable]) do
 		if Aura.splEffect:GetId() == iAuraId then
 			return true
 		end
@@ -58,7 +64,7 @@ end
 -- name-to-id conversion, cast evaluation, and much more
 --------------------------------------------------------
 OrionLib.Spell = {}
-OrionLib.Spell.tSpellCache = {}
+OrionLib.Spell._tSpellCache = {}
 
 
 --------------------------------------------------------
