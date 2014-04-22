@@ -1,3 +1,8 @@
+--------------------------------------------------------
+-- This file is part of the Orion Library.
+--
+-- Provides general utilities.
+--------------------------------------------------------
 local OrionLib = Apollo.GetAddon("OrionLib")
 OrionLib.Util = {}
 OrionLib.Util.__index = OrionLib.Util

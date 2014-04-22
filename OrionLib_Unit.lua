@@ -19,24 +19,18 @@ OrionLib.Unit.tUnits = {
 	"focustarget"   = function() return nil end -- nyi
 }
 
-OrionLib.Unit.wrapped = {}
-
 -- wraps basic Unit objects with our Wrapper functions
 function OrionLib.Unit:Get(sIdentifier)
 	sIdentifier = sIdentifier:lower()
-	if self.wrapped[sIdentifier] ~= nil then
-		return self.wrapped[sIdentifier]
-	else
-		if self.tUnits[sIdentifier] ~= nil then
-			local Unit = self.tUnits[sIdentifier]
-			local WrappedUnit = OrionLib.Unit.Wrapper
+	if self.tUnits[sIdentifier] ~= nil then
+		local Unit = self.tUnits[sIdentifier]
+		local WrappedUnit = OrionLib.Unit.Wrapper
 			
-			self.wrapped[sIdentifier] = OrionLib.Util.JoinTables(Unit, WrappedUnit)
-			return self.wrapped[sIdentifier]
-		end
-		
-		return nil
+		self.wrapped[sIdentifier] = OrionLib.Util.JoinTables(Unit, WrappedUnit)
+		return self.wrapped[sIdentifier]
 	end
+		
+	return nil
 end
 
 -- wrapper functions
