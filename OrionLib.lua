@@ -10,20 +10,16 @@ local OrionLib = {}
 OrionLib.Unit.tUnits = {
 	"player"		= GameLib.GetPlayerUnit,
 	"target"		= GameLib.GetTargetUnit,
-	"focus"  		= function() return nil end, -- nyi
-	"targettarget"	= function() return OrionLib.Unit:Get("target"):GetTarget() end
-	"focustarget"   = function() return nil end -- nyi
+	"focus"  		= function() return GameLib.GetPlayerUnit():GetAlternateTarget() end,
+	"targettarget"	= function() return GameLib.GetTargetUnit() and GameLib.GetTargetUnit():GetTarget() or nil end
+	"focustarget"   = function() return GameLib.GetPlayerUnit():GetAlternateTarget() and GameLib.GetPlayerUnit():GetAlternateTarget():GetTarget() or nil end
 }
 
 -- wraps basic Unit objects with our Wrapper functions
 function OrionLib.Unit:Get(sIdentifier)
 	sIdentifier = sIdentifier:lower()
 	if self.tUnits[sIdentifier] ~= nil then
-		local Unit = self.tUnits[sIdentifier]
-		local WrappedUnit = OrionLib.Unit.Wrapper
-			
-		self.wrapped[sIdentifier] = OrionLib.Util.JoinTables(Unit, WrappedUnit)
-		return self.wrapped[sIdentifier]
+		return OrionLib.Util.JoinTables(self.tUnits[sIdentifier], OrionLib.Unit.Wrapper)
 	end
 		
 	return nil
@@ -51,7 +47,7 @@ end
 
 function OrionLib.Unit.Wrapper:HasDebuff(iAuraId)
 	return self:HasAura(iAuraId, true)
-
+end
 
 
 
