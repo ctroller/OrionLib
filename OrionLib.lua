@@ -1,3 +1,6 @@
+require "GameLib"
+require "AbilityBook"
+
 --------------------------------------------------------
 -- Orion:Lib-1.0
 --  + Orion:Unit-1.0
@@ -13,6 +16,8 @@ local OrionLib = {}
 -- string-to-Unit conversions, aura checking, 
 -- and much more.
 --------------------------------------------------------
+local OrionLib.Unit = {}
+
 OrionLib.Unit.tUnits = {
 	"player"        = GameLib.GetPlayerUnit,
 	"target"        = GameLib.GetTargetUnit,
@@ -23,7 +28,7 @@ OrionLib.Unit.tUnits = {
 
 -- wraps basic Unit objects with our Wrapper functions
 function OrionLib.Unit:Get(strIdentifier)
-	strIdentifier= strIdentifier:lower()
+	strIdentifier = strIdentifier:lower()
 	if self.tUnits[strIdentifier] ~= nil then
 		return OrionLib.Util.JoinTables(self.tUnits[strIdentifier], OrionLib.Unit.Wrapper)
 	end
@@ -35,16 +40,21 @@ end
 local OrionLib.Unit.Wrapper = {}
 
 -- Aura handling
-function OrionLib.Unit.Wrapper:HasAura(iAuraId, bHarmful)
+function OrionLib.Unit.Wrapper:GetAura(iAuraId, bHarmful)
 	local strTable = bHarmful and "arHarmful" or "arBeneficial"
-	local Auras = self:GetBuffs()
-	for i, Aura in ipairs(Auras[strTable]) do
-		if Aura.splEffect:GetId() == iAuraId then
-			return true
+	local auras = self:GetBuffs()
+	for i, aura in ipairs(auras[strTable]) do
+		if aura.splEffect:GetId() == iAuraId then
+			return aura
 		end
 	end
 		
-	return false
+	return nil
+end
+
+
+function OrionLib.Unit.Wrapper:HasAura(iAuraId, bHarmful)
+	return self:GetAura(iAuraId, bHarmful) ~= nil
 end
 
 function OrionLib.Unit.Wrapper:HasBuff(iAuraId)
@@ -61,10 +71,50 @@ end
 -- SPELL
 --
 -- Provides spell related helper function, like 
--- name-to-id conversion, cast evaluation, and much more
+-- cast evaluation and much more
 --------------------------------------------------------
 OrionLib.Spell = {}
-OrionLib.Spell._tSpellCache = {}
+
+function OrionLib.Spell:CanCast(strTarget, iSpellId)
+	local target = OrionLib.Unit:Get(strTarget)
+	if target and not target:IsDead() and target:IsValid() and self:IsSpellKnown(iSpellId) then
+		local spell = GameLib.GetSpell(iSpellId)
+		if spell and self:IsSpellKnown(iSpellId) and self:GetSpellCooldown(spell) <= 0 then	
+			return true
+		end
+	end
+	
+	return false
+end
+
+function OrionLib.Spell:IsPlayerSpell(iSpellId)
+	for i, spellData in ipairs(AbilityBook.GetAbilitiesList()) do
+		if spellData.splObject:GetId() == iSpellId then
+			return true
+		end
+	end
+	
+	return false
+end
+
+function OrionLib.Spell:IsSpellKnown(iSpellId)
+	for i, spellData in ipairs(AbilityBook.GetAbilitiesList()) do
+		if spellData.splObject:GetId() == iSpellId then
+			return spellData.known == true
+		end
+	end
+	
+	return false
+end
+
+function OrionLib.Spell:GetSpellCooldown(spellObj)
+	local charges = spellObj:GetAbilityCharges()
+	if charges and charges.nChargesMax > 0 then
+		return charges.fRechargePercentRemaining * charges.fRechargeTime, charges.fRechargeTime, charges.nChargesRemaining
+	else
+		return spellObj:GetCooldownRemaining(), spellObj:GetCooldownTime(), 0
+	end
+end
 
 
 --------------------------------------------------------
@@ -82,7 +132,7 @@ function OrionLib.Util.JoinTables(tTable1, tTable2)
 end
 
 --------------------------------------------------------
-Apollo.RegisterPackage(OrionLib, "Orion:Lib-1.0", 1, {})
-Apollo.RegisterPackage(OrionLib.Util, "Orion:LibUtil-1.0", 1, {"Orion:Lib-1.0"})
-Apollo.RegisterPackage(OrionLib.Unit, "Orion:LibUnit-1.0", 1, {"Orion:LibUtil-1.0"})
-Apollo.RegisterPackage(OrionLib.Spell, "Orion:LibSpell-1.0", 1, {"Orion:LibUnit-1.0"})
+Apollo.RegisterPackage(OrionLib, "Trox:Orion:Lib-1.0", 1, {})
+Apollo.RegisterPackage(OrionLib.Util, "Trox:Orion:LibUtil-1.0", 1, {"Trox:Orion:Lib-1.0"})
+Apollo.RegisterPackage(OrionLib.Unit, "Trox:Orion:LibUnit-1.0", 1, {"Trox:Orion:LibUtil-1.0"})
+Apollo.RegisterPackage(OrionLib.Spell, "Trox:Orion:LibSpell-1.0", 1, {"Trox:Orion:LibUnit-1.0"})
