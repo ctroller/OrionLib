@@ -2,9 +2,10 @@
 -- UTIL
 -- Provides general utilities.
 --------------------------------------------------------
-local OrionLib_Util = {}
+OrionLib = OrionLib or {}
+OrionLib.Util = {}
 
-function OrionLib_Util.JoinTables(tTable1, tTable2)
+function OrionLib.Util.JoinTables(tTable1, tTable2)
 	for key, value in pairs(tTable2) do
 		tTable1[key] = value
 	end
@@ -12,4 +13,4 @@ function OrionLib_Util.JoinTables(tTable1, tTable2)
 	return tTable1
 end
 
-Apollo.RegisterPackage(OrionLib_Unit, "Trox:Orion:LibUtil-1.0", 1)
+Apollo.RegisterPackage(OrionLib.Util, "Trox:Orion:LibUtil-1.0", 1)

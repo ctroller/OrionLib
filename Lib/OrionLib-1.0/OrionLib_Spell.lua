@@ -6,11 +6,12 @@ require "AbilityBook"
 -- Provides spell related helper function, like 
 -- cast evaluation and much more
 --------------------------------------------------------
-local OrionLib_Spell = {}
-local OrionLib_Unit = Apollo.GetPackage("Trox:Orion:LibUnit-1.0")
+OrionLib = OrionLib or {}
+OrionLib.Spell = {}
+OrionLib.Unit = OrionLib.Unit or Apollo.GetPackage("Trox:Orion:LibUnit-1.0").tPackage
 
-function OrionLib_Spell:CanCast(strTarget, iSpellId)
-	local target = OrionLib_Unit:Get(strTarget)
+function OrionLib.Spell:CanCast(strTarget, iSpellId)
+	local target = OrionLib.Unit:Get(strTarget)
 	if target and not target:IsDead() and target:IsValid() and self:IsSpellKnown(iSpellId) then
 		local spell = GameLib.GetSpell(iSpellId)
 		if spell and self:IsSpellKnown(iSpellId) and self:GetSpellCooldown(spell) <= 0 then	
@@ -50,4 +51,4 @@ function OrionLib_Spell:GetSpellCooldown(spellObj)
 	end
 end
 
-Apollo.RegisterPackage(OrionLib_Unit, "Trox:Orion:LibSpell-1.0", 1, {"Trox:Orion:LibUnit-1.0"})
+Apollo.RegisterPackage(OrionLib.Spell, "Trox:Orion:LibSpell-1.0", 1, {"Trox:Orion:LibUnit-1.0"})

@@ -1,9 +1,10 @@
 require "GameLib"
 
-local OrionLib_Unit = {}
-local OrionLib_Util = Apollo.GetPackage("Trox:Orion:LibUtil-1.0")
+OrionLib = OrionLib or {}
+OrionLib.Unit = {}
+OrionLib.Util = OrionLib.Util or Apollo.GetPackage("Trox:Orion:LibUtil-1.0").tPackage
 
-OrionLib_Unit.tUnits = {
+OrionLib.Unit.tUnits = {
 	"player"        = GameLib.GetPlayerUnit,
 	"target"        = GameLib.GetTargetUnit,
 	"focus"         = function() return GameLib.GetPlayerUnit():GetAlternateTarget() end,
@@ -12,20 +13,20 @@ OrionLib_Unit.tUnits = {
 }
 
 -- wraps basic Unit objects with our Wrapper functions
-function OrionLib_Unit:Get(strIdentifier)
+function OrionLib.Unit:Get(strIdentifier)
 	strIdentifier = strIdentifier:lower()
 	if self.tUnits[strIdentifier] ~= nil then
-		return OrionLib_Util.JoinTables(self.tUnits[strIdentifier], OrionLib_Unit.Wrapper)
+		return OrionLib.Util.JoinTables(self.tUnits[strIdentifier], self.Wrapper)
 	end
 		
 	return nil
 end
 
 -- wrapper functions
-local OrionLib_Unit.Wrapper = {}
+local OrionLib.Unit.Wrapper = {}
 
 -- Aura handling
-function OrionLib_Unit.Wrapper:GetAura(iAuraId, bHarmful)
+function OrionLib.Unit.Wrapper:GetAura(iAuraId, bHarmful)
 	local strTable = bHarmful and "arHarmful" or "arBeneficial"
 	local auras = self:GetBuffs()
 	for i, aura in ipairs(auras[strTable]) do
@@ -38,16 +39,16 @@ function OrionLib_Unit.Wrapper:GetAura(iAuraId, bHarmful)
 end
 
 
-function OrionLib_Unit.Wrapper:HasAura(iAuraId, bHarmful)
+function OrionLib.Unit.Wrapper:HasAura(iAuraId, bHarmful)
 	return self:GetAura(iAuraId, bHarmful) ~= nil
 end
 
-function OrionLib_Unit.Wrapper:HasBuff(iAuraId)
+function OrionLib.Unit.Wrapper:HasBuff(iAuraId)
 	return self:HasAura(iAuraId)
 end
 
-function OrionLib_Unit.Wrapper:HasDebuff(iAuraId)
+function OrionLib.Unit.Wrapper:HasDebuff(iAuraId)
 	return self:HasAura(iAuraId, true)
 end
 
-Apollo.RegisterPackage(OrionLib_Unit, "Trox:Orion:LibUnit-1.0", 1, {"Trox:Orion:LibUtil-1.0"})
+Apollo.RegisterPackage(OrionLib.Unit, "Trox:Orion:LibUnit-1.0", 1, {"Trox:Orion:LibUtil-1.0"})
