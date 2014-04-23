@@ -50,4 +50,4 @@ function OrionLib_Spell:GetSpellCooldown(spellObj)
 	end
 end
 
-Apollo.RegisterPackage(OrionLib_Unit, "Trox:Orion:LibSpell-1.0", 1, {"Trox:Orion:LibUnit-1.0"})
+Apollo.RegisterPackage(OrionLib_Unit"Trox:Orion:LibSpell-1.0", 1, {"Trox:Orion:LibUnit-1.0"})
