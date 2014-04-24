@@ -2,18 +2,19 @@ require "GameLib"
 
 OrionLib = OrionLib or {}
 OrionLib.Unit = {}
-OrionLib.Util = OrionLib.Util or Apollo.GetPackage("Trox:Orion:LibUtil-1.0").tPackage
+OrionLib.Util = OrionLib.Util or Apollo.GetPackage("Trox:Orion:Util-1.0").tPackage
 
 OrionLib.Unit.tUnits = {
-	"player"        = GameLib.GetPlayerUnit,
-	"target"        = GameLib.GetTargetUnit,
-	"focus"         = function() return GameLib.GetPlayerUnit():GetAlternateTarget() end,
-	"targettarget"  = function() return GameLib.GetTargetUnit() and GameLib.GetTargetUnit():GetTarget() or nil end
-	"focustarget"   = function() return GameLib.GetPlayerUnit():GetAlternateTarget() and GameLib.GetPlayerUnit():GetAlternateTarget():GetTarget() or nil end
+	player        = function() return GameLib.GetPlayerUnit() end,
+	target        = function() return GameLib.GetTargetUnit() end,
+	focus         = function() return GameLib.GetPlayerUnit():GetAlternateTarget() end,
+	targettarget  = function() return GameLib.GetTargetUnit() and GameLib.GetTargetUnit():GetTarget() or nil end,
+	focustarget   = function() return GameLib.GetPlayerUnit():GetAlternateTarget() and GameLib.GetPlayerUnit():GetAlternateTarget():GetTarget() or nil end
 }
 
 -- wraps basic Unit objects with our Wrapper functions
 function OrionLib.Unit:Get(strIdentifier)
+	OrionLib.Util.AssertString(1, strIdentifier)
 	strIdentifier = strIdentifier:lower()
 	if self.tUnits[strIdentifier] ~= nil then
 		return OrionLib.Util.JoinTables(self.tUnits[strIdentifier], self.Wrapper)
@@ -51,4 +52,4 @@ function OrionLib.Unit.Wrapper:HasDebuff(iAuraId)
 	return self:HasAura(iAuraId, true)
 end
 
-Apollo.RegisterPackage(OrionLib.Unit, "Trox:Orion:LibUnit-1.0", 1, {"Trox:Orion:LibUtil-1.0"})
+Apollo.RegisterPackage(OrionLib.Unit, "Trox:Orion:Unit-1.0", 1, {"Trox:Orion:Util-1.0"})

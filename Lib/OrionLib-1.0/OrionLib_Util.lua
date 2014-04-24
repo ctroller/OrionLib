@@ -5,12 +5,33 @@
 OrionLib = OrionLib or {}
 OrionLib.Util = {}
 
-function OrionLib.Util.JoinTables(tTable1, tTable2)
-	for key, value in pairs(tTable2) do
-		tTable1[key] = value
+if not table.pack then
+	function table.pack(...)
+		return {n=select('#', ...); ...}
 	end
-	
-	return tTable1
 end
 
-Apollo.RegisterPackage(OrionLib.Util, "Trox:Orion:LibUtil-1.0", 1)
+if not table.join then
+	function table.join(t1, t2)
+		for k,v in pairs(t2) do
+			t1[k] = v
+		end
+	
+		return t1
+	end
+end
+
+function OrionLib.Util.Assert(num, value, type, verify, strMessage, level)
+	if type(value) ~= type then
+		error(("argument %d expected a '%s', got a '%s'"):format(num,type,type(value)),level or 2)
+	end
+	if verify and not verify(value) then
+		error(("argument %d: '%s' %s"):format(num,value,strMessage),level or 2)
+	end
+end
+
+function OrionLib.Util.AssertString(num, value)
+	OrionLib.Util.Assert(num, value, 'string', nil, nil, 3)
+end
+
+Apollo.RegisterPackage(OrionLib.Util, "Trox:Orion:Util-1.0", 1)

@@ -8,7 +8,7 @@ require "AbilityBook"
 --------------------------------------------------------
 OrionLib = OrionLib or {}
 OrionLib.Spell = {}
-OrionLib.Unit = OrionLib.Unit or Apollo.GetPackage("Trox:Orion:LibUnit-1.0").tPackage
+OrionLib.Unit = OrionLib.Unit or Apollo.GetPackage("Trox:Orion:Unit-1.0").tPackage
 
 function OrionLib.Spell:CanCast(strTarget, iSpellId)
 	local target = OrionLib.Unit:Get(strTarget)
@@ -22,7 +22,7 @@ function OrionLib.Spell:CanCast(strTarget, iSpellId)
 	return false
 end
 
-function OrionLib_Spell:IsPlayerSpell(iSpellId)
+function OrionLib.Spell:IsPlayerSpell(iSpellId)
 	for i, spellData in ipairs(AbilityBook.GetAbilitiesList()) do
 		if spellData.splObject:GetId() == iSpellId then
 			return true
@@ -32,7 +32,7 @@ function OrionLib_Spell:IsPlayerSpell(iSpellId)
 	return false
 end
 
-function OrionLib_Spell:IsSpellKnown(iSpellId)
+function OrionLib.Spell:IsSpellKnown(iSpellId)
 	for i, spellData in ipairs(AbilityBook.GetAbilitiesList()) do
 		if spellData.splObject:GetId() == iSpellId then
 			return spellData.known == true
@@ -42,7 +42,7 @@ function OrionLib_Spell:IsSpellKnown(iSpellId)
 	return false
 end
 
-function OrionLib_Spell:GetSpellCooldown(spellObj)
+function OrionLib.Spell:GetSpellCooldown(spellObj)
 	local charges = spellObj:GetAbilityCharges()
 	if charges and charges.nChargesMax > 0 then
 		return charges.fRechargePercentRemaining * charges.fRechargeTime, charges.fRechargeTime, charges.nChargesRemaining
@@ -51,4 +51,4 @@ function OrionLib_Spell:GetSpellCooldown(spellObj)
 	end
 end
 
-Apollo.RegisterPackage(OrionLib.Spell, "Trox:Orion:LibSpell-1.0", 1, {"Trox:Orion:LibUnit-1.0"})
+Apollo.RegisterPackage(OrionLib.Spell, "Trox:Orion:Spell-1.0", 1, {"Trox:Orion:Unit-1.0"})
